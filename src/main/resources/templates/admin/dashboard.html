@@ -1,0 +1,209 @@
+{#include base} 
+  {#title}Admin{/title} 
+  {#body}
+  <section class="section">
+    <div class="container">
+      {#if listaEntidad.size() == 0 }
+      <div class="tile is-ancestor">
+        {#include include/tilesAdmin}{/include}
+      </div>
+      {#else}
+      <main class="column main">
+        <nav class="breadcrumb is-small" aria-label="breadcrumbs">
+          <ul>
+            <li><a href="#">Home</a></li>
+            <li class="is-active"><a href="#" aria-current="page">Dashboard</a></li>
+          </ul>
+        </nav>
+    
+        <div class="level">
+          <div class="level-left">
+            <div class="level-item">
+              <div class="title has-text-primary"><i class="fas fa-tachometer-alt"></i> Dashboard</div>
+            </div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <button type="button" class="button is-small">
+                 {util.fecha}
+              </button>
+            </div>
+          </div>
+        </div>
+    
+        <div class="columns is-multiline">
+          <div class="column">
+            <div class="box notification is-primary">
+              <div class="heading">Acceso del Día</div>
+              <div class="title">{stats.accessCountTodayByAllEntity}</div>
+              <div class="level">
+                <div class="level-item">
+                  <div class="">
+                    <div class="heading">Ayer</div>
+                    <div class="title is-5">{stats.accessCountYesterdayByAllEntity}</div>
+                  </div>
+                </div>
+                <div class="level-item">
+                  <div class="">
+                    <div class="heading">Hoy</div>
+                    <div class="title is-5">{stats.accessCountTodayByAllEntity}</div>
+                  </div>
+                </div>
+                <div class="level-item">
+                  <div class="">
+                    <div class="heading">Todos</div>
+                    <div class="title is-5">{stats.countByAllEntidad}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column is-hidden-mobile">
+            <div class="box notification is-warning">
+              <div class="heading">Revisiones</div>
+              <div class="title">55% / 45%</div>
+              <div class="level">
+                <div class="level-item">
+                  <div class="">
+                    <div class="heading">Ayer</div>
+                    <div class="title is-5">30%</div>
+                  </div>
+                </div>
+                <div class="level-item">
+                  <div class="">
+                    <div class="heading">Hoy</div>
+                    <div class="title is-5">25%</div>
+                  </div>
+                </div>
+                <div class="level-item">
+                  <div class="">
+                    <div class="heading">Semana</div>
+                    <div class="title is-5">45%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="column is-hidden-mobile">
+            <div class="box notification is-info">
+              <div class="heading">Actividad</div>
+              <div class="title">78% &uarr;</div>
+              <div class="level">
+                <div class="level-item">
+                  <div class="">
+                    <div class="heading">Hoy</div>
+                    <div class="title is-5">1560</div>
+                  </div>
+                </div>
+                <div class="level-item">
+                  <div class="">
+                    <div class="heading">Semana</div>
+                    <div class="title is-5">368</div>
+                  </div>
+                </div>
+                <div class="level-item">
+                  <div class="">
+                    <div class="heading">Mes</div>
+                    <div class="title is-5">77% / 23%</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>    
+      </main>
+      Tus entidades 
+      <p>
+      {#for entidad in listaEntidad} 
+        [ {entidad.nombre} ]
+      {/for}            
+      </p>
+      <div class="message-header">
+        <p>Accesos por Entidades</p>
+      </div>
+
+        <table class="table is-fullwidth is-hoverable">
+          <thead>
+            <tr>
+              <th class="is-hidden-touch">Declaración</th>
+              <th class="is-hidden-touch">Entidad</th>
+              <th>Fecha</th>              
+              <th>Persona</th>                            
+              <th class="has-text-centered">Estado</th>
+              <th class="has-text-centered is-hidden-touch">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {#for decla in listaDeclaraciones} 
+            <tr>
+              <td class="is-hidden-touch">{decla.declaracion.nombre}</td>
+              <td class="is-hidden-touch">{decla.entidad.nombre}</td>              
+              <td class="is-size-5">{decla.getFechaFormateada()}</td>
+              <td class="is-size-5">{#if decla.persona.nombre == null }{decla.persona.mail}{#else}{decla.persona.getApellidoyNombre()}{/if}</td>              
+              <td class="is-size-5 has-text-centered {#if decla.estado == 0 }is-warning{#else if decla.estado == 2}is-danger{#else}is-success{/if}">
+                {#if decla.estado == 0 }
+                <p class="is-hidden-touch">REVISAR</p><p class="is-hidden-tablet">REV</p>
+                {#else if decla.estado == 2}
+                <p class="is-hidden-touch"><span class="icon">
+                  <i class="fas fa-thermometer-three-quarters"></i>
+                </span> BLOQUEAR</p><p class="is-hidden-tablet"><span class="icon">
+                  <i class="fas fa-thermometer-three-quarters"></i>
+                </span></p>                
+                {#else}
+                <p class="is-hidden-touch">OK</p><p class="is-hidden-tablet">OK</p>
+                {/if}
+              </td>
+              <td class="has-text-centered">
+                <button class="button" title="Cambiar Estado">
+                  <span class="icon">
+                    <i class="fas fa-toggle-on"></i>
+                  </span>
+                </button>
+                <button class="button" title="Ver Declaración">
+                  <span class="icon">
+                    <i class="far fa-file-alt"></i>
+                  </span>
+                </button>
+                <button class="button" title="Ver Relaciones">
+                  <span class="icon">
+                    <i class="fas fa-people-arrows"></i>
+                  </span>
+                </button>
+                <button class="button" title="Comunicarse">
+                  <span class="icon">
+                    <i class="fas fa-phone"></i>
+                  </span>
+                </button>
+              </td>
+            </tr>
+            <!--
+            <tr>
+              <td colspan="6">
+                {#for pregunta in decla.declaracion.preguntas} 
+                  {pregunta.nombre} - {pregunta.valor}<br/>
+                {/for}
+              </td>
+            </tr>
+            -->
+            {/for}
+          </tbody>
+        </table>
+      </p>
+      
+  {/if}    
+    </div>
+  </section>  
+
+  {/body}
+  {#script}
+  <script src="https://www.google.com/recaptcha/api.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#pnlResultado").hide();
+
+    });
+
+  </script>
+  {/script}
+{/include}

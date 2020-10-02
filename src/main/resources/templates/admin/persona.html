@@ -1,0 +1,92 @@
+{#include base} 
+  {#title}Persona{/title} 
+  {#body}
+  <section class="section">
+    <div id="app" class="container">
+      <h1 class="title">
+        Persona 
+      </h1>
+      <p class="subtitle">
+        Gestiona tu  <strong>Información</strong>!
+      </p>
+      <div id="pnlFormulario">
+      </div>
+
+      <div id="pnlResultado">
+        <p>Vas a recibir y debes confirmar tu cuenta de mail para terminar tu registración.</p>
+        <p>Gracias y estamos en contacto.</p>
+      </div>
+      <div id="pnlInfo">
+
+      </div>
+    </div>
+  </section>  
+  {/body}
+
+  {#script}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#pnlFormulario').hide();
+      $("#pnlResultado").hide();
+      localData();
+
+      function localData() {
+
+        if (typeof (Storage) !== "undefined") {
+          // Store
+          var data = localStorage.getItem("persona");
+          var persona = JSON.parse(data);
+
+          if (persona==null) {
+            $('#pnlFormulario').show();
+          } else {
+            $('#pnlFormulario').hide();                 
+            $('#pnlInfo').html('Hola <strong>' + persona.apellidoyNombre + '!!</strong>');
+          }
+
+        } else {
+          $('#pnlFormulario').show();
+          $('#pnlInfo').hide();
+        }
+
+      }
+
+      $("#frmRegistrar").on('click', function (e) {
+        e.preventDefault();
+
+        var mail = $("#txtMail").val();
+        var nombre = $("#txtNombre").val();
+        var apellido = $("#txtApellido").val();
+        var mobile = $("#txtMobile").val();
+        var documento = $("#txtDocumento").val();
+        var domicilio = $("#txtDomicilio").val();
+
+        $.ajax("/api/persona/registrar", {
+          dataType: "json",
+          method: "POST",
+          data: {
+            "txtMail": mail,
+            "txtNombre": nombre,
+            "txtApellido": apellido,
+            "txtMobile": mobile,
+            "txtDocumento": documento,
+            "txtDomicilio": domicilio
+          }
+        }).done(function (data) {
+          var persona = JSON.stringify(data);
+          console.log(persona);
+          localStorage.setItem("persona", persona);
+        }).fail(function (data) {
+          console.log("error" + data);
+        });
+      });
+
+    });
+
+  </script>
+
+
+  {/script}
+  
+{/include}

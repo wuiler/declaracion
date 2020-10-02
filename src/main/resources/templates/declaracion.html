@@ -1,0 +1,118 @@
+{#include base} 
+  {#title}Declaración Jurada{/title} 
+  {#body}
+  <section class="section">
+    <div class="container">
+      <h1 class="title">
+        Declaración Jurada <span id="txtNombreUsuario"></span>
+      </h1>
+      <p class="subtitle">
+        Estas ingresando a <strong> {entidad.getNombre()}</strong>.
+      </p>
+      <div id="pnlFormulario">
+      <form method="POST" autocomplete="on" name="frmRegistrar" id="frmRegistrar" enctype="multipart/form-data" action="/api/declaracion/registrar">
+        <input type="hidden" name="idEntidad" id="idEntidad" value="{declaracionEntidad.getEntidad().getIdEntidad()}">
+        <input type="hidden" name="idUsuario" id="idUsuario" value="">
+        <input type="hidden" name="idDeclaracion" id="idDeclaracion" value="{declaracionEntidad.getDeclaracion().getIdDeclaracion()}">
+
+    {#for pregunta in listaPreguntas} 
+    <div class="field is-horizontal">      
+
+      <div class="field-body">
+        <div class="field-label">
+          <label class="label">{pregunta.nombre}</label>
+        </div>
+
+        <div class="field">
+          <div class="control">
+            {#if pregunta.tipo == 'option'} 
+            <label class="radio field-label is-large">
+              <input type="radio" name="pregunta{pregunta.idPregunta}" value="1">
+              Si
+            </label>
+            <label class="radio field-label is-large">
+              <input type="radio" name="pregunta{pregunta.idPregunta}" value="0">
+              No
+            </label>
+            {#else if pregunta.tipo == 'text'}             
+              <input type="text" name="pregunta{pregunta.idPregunta}">            
+            {/if}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    {/for}
+
+    <div class="field is-grouped">
+      <div class="control">
+        <input class="button is-link" type="submit" value="Aceptar" id="btnAceptar" />
+      </div>
+      <div class="control">
+        <button class="button is-link is-light">Cancelar</button>
+      </div>
+    </div>
+
+      </form>
+    </div>
+    </div>
+  </section>  
+
+  {/body}
+  {#script}
+
+  <script src="https://www.google.com/recaptcha/api.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#pnlResultado").hide();
+      localData();
+
+      function localData() {
+
+        if (typeof (Storage) !== "undefined") {
+          // Store
+          var data = localStorage.getItem("persona");
+          var persona = JSON.parse(data);
+
+          console.log(persona);
+
+          if (persona==null) {
+            location.href = "/registro";
+            return;
+          }
+
+          $('#idUsuario').val(persona.mail);
+          $('#txtNombreUsuario').html('de ' + persona.apellidoyNombre);
+
+        } else {
+          console.log("Hay que escribir como persona");
+          location.href = "/registro";
+        }
+
+      }
+
+      $("#btnAceptarX").on('click', function (e) {
+        e.preventDefault();
+
+        var data = $("#frmRegistrar").serialize();
+
+        $.ajax("/api/declaracion/registrar", {
+          dataType: "text",
+          method: "POST",
+          data: data
+        }).done(function (data) {
+          console.log(data);
+          var idEntidad = data.idEntidad;
+          $("#txtIdEntidad").val(idEntidad);
+          //$("#frmContinuar").submit();
+        }).fail(function (data) {
+          console.log("error calling");
+        });
+      });
+    });
+
+  </script>
+
+  {/script}
+{/include}

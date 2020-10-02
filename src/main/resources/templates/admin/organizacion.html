@@ -1,0 +1,258 @@
+{#include base} 
+  {#title}Crea tu negocio{/title} 
+  {#body}
+  <section class="section">
+    <div class="container">
+      <div>
+
+        <div class="columns">
+          <div class="column">
+            <h1 class="title">
+              Tus Entidades
+            </h1>
+            <p class="subtitle">
+              administra tus entidades
+            </p>
+          </div>
+          <div class="column">
+            <a href="javascript:void(0);" class="button is-pulled-right is-primary" id="btnCrear"> Crear Nueva</a>
+          </div>
+        </div>
+
+        {#if listaEntidades.size() != 0 }
+  
+        <div class="tile is-ancestor">
+          <div class="tile is-horizontal">
+          {#for entidad in listaDeclaracionEntidad} 
+              <div class="tile">
+                <div class="tile is-parent is-vertical">                  
+                  <article class="tile is-child notification is-primary">
+                    {#if entidad.entidad.tipo.idTipo == 1}
+                    <img src="/images/1200px-Squash_ball.svg.png" width="40" class="is-pulled-right" />
+                    {#else}
+                    otro
+                    {/if}
+                    <p class="title">{entidad.entidad.getNombre()}</p>
+                    <p class="subtitle">{entidad.entidad.direccion}</p>
+                    <p>
+                      <span class="icon is-small">
+                        <i class="fa fa-phone"></i>
+                      </span>
+                      {entidad.entidad.telefono}.  
+                      <span class="icon is-small">
+                        <i class="fas fa-mail"></i>
+                      </span>
+                      {entidad.entidad.mail} 
+                    </p>
+                    <p>
+                      <a href="#" class="card-footer-item">Editar</a>
+                      <a href="#" class="card-footer-item">QR</a>
+                    </p>
+                    <!--
+                    <p>
+                      <a href="/declaracion?entidad={entidad.entidad.getHashId()}" class="card-footer-item button is-primary is-large">Estoy aquí</a>
+                    </p>
+                    -->
+
+                  </article>
+                </div>
+              </div>
+          {/for}
+        </div>
+      </div>
+      {#else}
+          no hay
+      {/if}
+      </div>
+      <div id="pnlFormulario">
+
+        <div class="notification is-hidden" id="notificacion">
+          <button class="delete"></button>
+          <div id="textoNotificacion">
+
+          </div>
+        </div>
+
+      <h1 class="title">
+        Crea tu Entidad!
+      </h1>
+      <p class="subtitle">
+        Ingresa la info de tu organización!
+      </p>
+        <form method="POST" autocomplete="on">        
+          <input class="input" type="hidden" id="txtIdEntidad" name="txtIdEntidad" value="" />
+          <input class="input" type="hidden" id="txtCreadoPor" name="txtCreadoPor" value="{persona.mail}" />
+          
+          <div class="field">
+            <label class="label">Nombre</label>
+            <div class="control">
+              <input class="input" type="text" id="txtNombre" name="txtNombre" placeholder="ingrese su nombre completo">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Telefono Mobil</label>
+            <div class="control">
+              <input class="input" type="text" id="txtMobile" name="txtMobile" placeholder="ingrese su numero de celular">
+            </div>
+          </div>
+          
+          <div class="field">
+            <label class="label">Mail</label>
+            <div class="control">
+              <input class="input" type="email" id="txtMail" name="txtMail" placeholder="ingrese mail organización">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">La pueden ver el resto</label>
+            <div class="control select has-icons-left has-icons-right">
+              <select name="cmbPublica" id="cmbPublica">
+                <option value="1">Si</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="label">Tipo</label>
+            <div class="control select has-icons-left has-icons-right">
+              <select name="cmbTipo" id="cmbTipo">
+                <option value="999">Seleccione un rubro</option>
+                <option value="1">Canchas</option>
+                <option value="2">Otros</option>
+              </select>
+            </div>
+          </div>
+                  
+          <div class="field is-grouped">
+            <div class="control">
+              <button class="button is-link" id="frmRegistrar">Crear y Continuar</button>
+            </div>
+            <div class="control">
+              <button class="button is-link is-light" id="frmBtnCancelar">Cancelar</button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      <div id="pnlResultado">
+        <div class="columns">
+          <div class="column">
+            &nbsp;
+          </div>
+          <div class="column has-text-centered">
+            <img class="qr" id="qr" width="350" />  
+            <p class="title">Imprima esta imagen para su Cancha</p>
+          </div>
+          <div class="column">
+            &nbsp;
+          </div>
+        </div>
+        <div class="columns">
+          <div class="column">
+            &nbsp;
+          </div>
+          <div class="column has-text-centered">
+            <p><a href="/admin">Volver al Dashboard</a></p>
+          </div>
+          <div class="column">
+            &nbsp;
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>  
+
+  {/body}
+  {#script}
+
+  <script src="https://www.google.com/recaptcha/api.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $("#pnlResultado").hide();
+      $("#pnlFormulario").hide();
+      
+      function qr() {
+        
+        var xhrQr = new XMLHttpRequest();
+        xhrQr.onreadystatechange = function(){
+            if (this.readyState == 4 && this.status == 200){
+                var img = document.getElementById('qr');
+                var url = window.URL || window.webkitURL;
+                img.src = url.createObjectURL(this.response);
+            }
+        }
+        var laUrl = "/api/entidad/qr/"+$("#txtIdEntidad").val();
+        xhrQr.open('GET', laUrl);
+        xhrQr.responseType = 'blob';
+        xhrQr.send();            
+      }
+
+      $("#btnCrear").on('click', function (e) {
+        e.preventDefault();
+        $("#pnlResultado").hide();
+        $("#pnlFormulario").show();
+      });
+
+      $("#frmBtnCancelar").on('click', function (e) {
+        e.preventDefault();
+        $("#pnlResultado").hide();
+        $("#pnlFormulario").hide();
+      });
+
+      $("#frmRegistrar").on('click', function (e) {
+        e.preventDefault();
+
+        var creadoPor = $("#txtCreadoPor").val();
+        var nombre = $("#txtNombre").val();
+        var mobile = $("#txtMobile").val();
+        var mail =  $("#txtMail").val();
+        var esPublica = $('#cmbPublica option:selected').val();
+        var tipo = $('#cmbTipo option:selected').val();
+
+        $.ajax("/api/entidad/registraryasignar", {  
+          dataType: "json",
+          method: "POST",
+          data: {
+            "txtCreadoPor":creadoPor,
+            "txtNombre": nombre,
+            "txtMobile": mobile,
+            "txtMail":mail,
+            "cmbTipo": tipo,
+            "cmbPublica": esPublica
+          }
+        }).done(function (data) {
+          console.log(data);
+          var idEntidad = data.idEntidad;
+          $("#txtIdEntidad").val(idEntidad);        
+          $("#pnlFormulario").hide();
+          qr();
+          $("#pnlResultado").show();
+          
+        }).fail(function (data) {
+          console.log("error");
+          $('#notiticacion').removeAttr('class');
+          var estado = "is-danger";
+          $('#notificacion').attr('class', 'notification ' + estado);
+          $('#textoNotificacion').html('No se pudo crear la organización');
+        });
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+        var $notification = $delete.parentNode;
+
+        $delete.addEventListener('click', () => {
+          $notification.parentNode.removeChild($notification);
+        });
+      });
+    });
+
+  </script>
+
+
+  {/script}
+{/include}

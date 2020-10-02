@@ -1,0 +1,166 @@
+{#include base} 
+  {#title}Persona{/title} 
+  {#body}
+  <section class="section">
+    <div id="app" class="container">
+      <h1 class="title">
+        Persona 
+      </h1>
+      <p class="subtitle">
+        Gestiona tu  <strong>Información</strong>!
+      </p>
+      <div id="pnlFormulario">
+      <form method="POST" autocomplete="on">
+        <div class="columns is-mobile">
+          <div class="column">
+            <div class="field">
+              <label class="label">Mail</label>
+              <div class="control">
+                <input class="input" type="text" id="txtMail" name="txtMail" placeholder="ingresa tu email">
+              </div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="field">
+              <label class="label">Nombre</label>
+              <div class="control">
+                <input class="input" type="text" id="txtNombre" name="txtNombre" placeholder="ingresa tu nombre completo">
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label">Apellido</label>
+              <div class="control">
+                <input class="input" type="text" id="txtApellido" name="txtApellido" placeholder="ingresa tu apellido">
+              </div>
+            </div>
+    
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label">Mobile</label>
+              <div class="control">
+                <input class="input" type="text" id="txtMobile" name="txtMobile" placeholder="ingrese tu celu">
+              </div>
+            </div>
+          </div>
+          <div class="column">
+            <div class="field">
+              <label class="label">Número de Documento</label>
+              <div class="control">
+                <input class="input" type="text" id="txtDocumento" name="txtDocumento" placeholder="ingresa tu documento">
+              </div>
+            </div>
+          </div>          
+          <div class="column">
+            <div class="field">
+              <label class="label">Domicilio</label>
+              <div class="control">
+                <input class="input" type="text" id="txtDomicilio" name="Domicilio" placeholder="ingresa tu domicilio">
+              </div>
+            </div>
+          </div>          
+
+        </div>
+        
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link" id="frmRegistrar">Registrarme</button>
+          </div>
+          <div class="control">
+            <button class="button is-link is-light">Cancelar</button>
+          </div>
+        </div>
+        
+      </form>      
+    </div>
+
+    <div id="pnlResultado">
+      <p>Vas a recibir y debes confirmar tu cuenta de mail para terminar tu registración.</p>
+      <p>Gracias y estamos en contacto.</p>
+    </div>
+    <div id="pnlInfo">
+
+      </div>
+    </div>
+  </section>  
+  {/body}
+
+  {#script}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#pnlFormulario').hide();
+      $("#pnlResultado").hide();
+      localData();
+
+      function localData() {
+
+        if (typeof (Storage) !== "undefined") {
+          // Store
+          var data = localStorage.getItem("persona");
+          var persona = JSON.parse(data);
+
+          if (persona==null) {
+            $('#pnlFormulario').show();
+          } else {
+            $('#pnlFormulario').hide();                 
+            $('#pnlInfo').html('Hola <strong>' + persona.apellidoyNombre + '!!</strong>');
+          }
+
+        } else {
+          $('#pnlFormulario').show();
+          $('#pnlInfo').hide();
+        }
+
+      }
+
+
+
+      $("#frmRegistrar").on('click', function (e) {
+        e.preventDefault();
+
+        var mail = $("#txtMail").val();
+        var nombre = $("#txtNombre").val();
+        var apellido = $("#txtApellido").val();
+        var mobile = $("#txtMobile").val();
+        var documento = $("#txtDocumento").val();
+        var domicilio = $("#txtDomicilio").val();
+
+        $.ajax("/api/persona/registrar", {
+          dataType: "json",
+          method: "POST",
+          data: {
+            "txtMail": mail,
+            "txtNombre": nombre,
+            "txtApellido": apellido,
+            "txtMobile": mobile,
+            "txtDocumento": documento,
+            "txtDomicilio": domicilio
+          }
+        }).done(function (data) {
+          var persona = JSON.stringify(data);
+          console.log(persona);
+          localStorage.setItem("persona", persona);
+          $('#pnlFormulario').hide();   
+          var data = localStorage.getItem("persona");
+          var persona = JSON.parse(data);
+              
+          $('#pnlInfo').html('Gracias por registrarte <strong>' + persona.apellidoyNombre + '!!</strong><p class="title"><a href="/declaracion">Firmar una declaración.</a></p>');
+
+        }).fail(function (data) {
+          $('#pnlFormulario').hide();                 
+          $('#pnlInfo').html('Ha ocurrido un incoveniente. Intente nuevamente más tarde. Gracias!');
+        });
+      });
+
+    });
+
+  </script>
+
+
+  {/script}
+  
+{/include}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{#insert title}Default Title{/}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
+    <link rel="stylesheet" href="/css/bulmaswatch.min.css">
+    <!--<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>-->
+    <script src="https://kit.fontawesome.com/5876f8b1fe.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    {#insert navbar}
+    <nav class="navbar is-transparent">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="/">
+          <span class="icon is-large"><i class="fas fa-pen-alt"></i></span>DECLA 
+        </a>      
+        <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>    
+      </div>    
+        <div class="navbar-menu" id="navMenu">
+          <div class="navbar-menu navbar-end" id="navMenu">
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link" href="/admin">
+                Admin
+              </a>
+              <div class="navbar-dropdown">
+                <a class="navbar-item" href="/admin/organizacion">
+                  Organización
+                </a>
+                <a class="navbar-item" href="/admin/persona">
+                  Personas
+                </a>
+                <a class="navbar-item" href="/admin/declaracion">
+                  Declaración
+                </a>
+              </div>
+            </div>
+            {#if persona != null }
+            <div class="navbar-item has-dropdown is-hoverable">
+              <a class="navbar-link">
+                <span class="icon is-small">
+                  <i class="fa fa-user"></i>
+                </span>
+                &nbsp; {persona.mail}  
+              </a>
+  
+              <div class="navbar-dropdown is-right">
+                  <a class="navbar-item">
+                    <span class="icon is-small">
+                      <i class="fa fa-user"></i>
+                    </span>
+                    &nbsp; Mi Perfil
+                  </a>
+                  <hr class="navbar-divider">
+                  <a class="navbar-item" href="/admin/logout">
+                    <span class="icon is-small">
+                      <i class="fa fa-power-off"></i>
+                    </span>
+                    &nbsp; Salir
+                  </a>
+              </div>
+            </div>
+            {/if}
+          </div>          
+        </div>      
+    </nav>
+
+    {/}    
+    {#insert body}No body!{/}    
+    <footer class="footer">
+      <nav class="level">
+        <div class="level-item level-right">
+          <div>
+            <a href="/ayuda" target="_blank">Ayuda</a>
+          </div>
+        </div>
+        <div class="level-item level-left">
+          <div>
+            &nbsp;&nbsp;&nbsp;<a href="/contacto" target="_blank">Contacto</a>
+          </div>
+        </div>
+      </nav>
+    </footer>
+    {#insert script}{/}    
+  </body>
+</html>

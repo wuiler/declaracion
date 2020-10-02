@@ -1,0 +1,70 @@
+{#include base} 
+  {#title}Entidades{/title} 
+  {#body}
+  <section class="section">
+    <div class="container">
+      <div>
+
+        <div class="columns">
+          <div class="column">
+            <h1 class="title">
+              Entidades registradas
+            </h1>
+            <p class="subtitle">
+              Selecciona tu entidad
+            </p>
+          </div>
+        </div>
+
+        {#if listaEntidades.size() != 0 }
+  
+        <div class="tile is-ancestor">
+          <div class="tile is-horizontal">
+          {#for entidad in listaDeclaracionEntidad} 
+              <div class="tile">
+                <div class="tile is-parent is-vertical">                  
+                  <article class="tile is-child notification is-primary">
+                    {#if entidad.entidad.tipo.idTipo == 1}
+                    <img src="/images/1200px-Squash_ball.svg.png" width="40" class="is-pulled-right" />
+                    {#else}
+                    otro
+                    {/if}
+                    <p class="title">{entidad.entidad.getNombre()}</p>
+                    <p class="subtitle">{entidad.entidad.direccion}</p>
+                    <p>
+                      <span class="icon is-small">
+                        <i class="fa fa-phone"></i>
+                      </span>
+                      {entidad.entidad.telefono}.  
+                      <span class="icon is-small">
+                        <i class="fas fa-mail"></i>
+                      </span>
+                      {entidad.entidad.mail} 
+                    </p>
+                    <p>
+                      <a href="/declaracion?entidad={entidad.entidad.getHashId()}" class="card-footer-item button is-primary is-large">Estoy aquí</a>
+                    </p>
+                  </article>
+                </div>
+              </div>
+          {/for}
+        </div>
+      </div>
+      {#else}
+          <p class="title">no hay entidades registradas aún.</p>
+      {/if}
+      </div>
+    </div>
+  </section>  
+
+  {/body}
+  {#script}
+
+  <script src="https://www.google.com/recaptcha/api.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script>
+    $(document).ready(function () {
+    });
+  </script>
+  {/script}
+{/include}
