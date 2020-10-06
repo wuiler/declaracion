@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{#insert title}Default Title{/}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css">
-    <link rel="stylesheet" href="/css/bulmaswatch.min.css">
-    <!--<script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>-->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css" />
+    <link rel="stylesheet" href="/css/bulmaswatch.min.css" />
+    {#insert stylesheet}{/}    
     <script src="https://kit.fontawesome.com/5876f8b1fe.js" crossorigin="anonymous"></script>
   </head>
   <body>
@@ -30,9 +30,12 @@
               </a>
               <div class="navbar-dropdown">
                 <a class="navbar-item" href="/admin/organizacion">
-                  Organización
+                  Entidad
                 </a>
-                <a class="navbar-item" href="/admin/persona">
+                <a class="navbar-item" href="/admin/espacio">
+                  Espacio
+                </a>
+                <a class="navbar-item" href="/admin/personas">
                   Personas
                 </a>
                 <a class="navbar-item" href="/admin/declaracion">
@@ -69,7 +72,6 @@
           </div>          
         </div>      
     </nav>
-
     {/}    
     {#insert body}No body!{/}    
     <footer class="footer">
@@ -86,6 +88,32 @@
         </div>
       </nav>
     </footer>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+
+        // Check if there are any navbar burgers
+        if ($navbarBurgers.length > 0) {
+
+          // Add a click event on each of them
+          $navbarBurgers.forEach( el => {
+            el.addEventListener('click', () => {
+
+              // Get the target from the "data-target" attribute
+              const target = el.dataset.target;
+              const $target = document.getElementById(target);
+
+              // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+              el.classList.toggle('is-active');
+              $target.classList.toggle('is-active');
+
+            });
+          });
+        }
+        });
+    </script>
     {#insert script}{/}    
   </body>
 </html>

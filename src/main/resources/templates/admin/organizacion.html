@@ -30,7 +30,7 @@
                     {#if entidad.entidad.tipo.idTipo == 1}
                     <img src="/images/1200px-Squash_ball.svg.png" width="40" class="is-pulled-right" />
                     {#else}
-                    otro
+                    <!--otro-->
                     {/if}
                     <p class="title">{entidad.entidad.getNombre()}</p>
                     <p class="subtitle">{entidad.entidad.direccion}</p>
@@ -45,15 +45,16 @@
                       {entidad.entidad.mail} 
                     </p>
                     <p>
-                      <a href="#" class="card-footer-item">Editar</a>
-                      <a href="#" class="card-footer-item">QR</a>
+                      {entidad.entidad.toString()}
+                      <a href="#" class="card-footer-item button is-primary is-large" id="btnEditar">Editar</a>
+                      <a href="#" class="card-footer-item button is-primary is-large">QR</a>
+                      <a href="#" class="card-footer-item button is-primary is-large" id="btnEspacio">Espacios</a>
                     </p>
                     <!--
                     <p>
                       <a href="/declaracion?entidad={entidad.entidad.getHashId()}" class="card-footer-item button is-primary is-large">Estoy aquí</a>
                     </p>
                     -->
-
                   </article>
                 </div>
               </div>
@@ -105,7 +106,7 @@
           </div>
 
           <div class="field">
-            <label class="label">La pueden ver el resto</label>
+            <label class="label">La pueden ver todos</label>
             <div class="control select has-icons-left has-icons-right">
               <select name="cmbPublica" id="cmbPublica">
                 <option value="1">Si</option>
@@ -125,6 +126,16 @@
             </div>
           </div>
                   
+          <div class="field">
+            <label class="label">Tipo Ingreso Declaracion</label>
+            <div class="control select has-icons-left has-icons-right">
+              <select name="cmbTipoIngreso" id="cmbTipoIngreso">
+                <option value="1" selected="selected">Unico acceso</option>
+                <option value="2">Solicitar siempre</option>
+              </select>
+            </div>
+          </div>
+
           <div class="field is-grouped">
             <div class="control">
               <button class="button is-link" id="frmRegistrar">Crear y Continuar</button>
@@ -162,6 +173,13 @@
         </div>
       </div>
     </div>
+    <div class="modal">
+      <div class="modal-background"></div>
+      <div class="modal-content">
+        <!-- Any other Bulma elements you want -->
+      </div>
+      <button class="modal-close is-large" aria-label="close"></button>
+    </div>
   </section>  
 
   {/body}
@@ -190,6 +208,10 @@
         xhrQr.send();            
       }
 
+      $("#btnEditar").on('click', function (e) {
+        e.preventDefault();
+      });
+
       $("#btnCrear").on('click', function (e) {
         e.preventDefault();
         $("#pnlResultado").hide();
@@ -211,6 +233,7 @@
         var mail =  $("#txtMail").val();
         var esPublica = $('#cmbPublica option:selected').val();
         var tipo = $('#cmbTipo option:selected').val();
+        var tipoIngreso = $('#cmbTipoIngreso option:selected').val();
 
         $.ajax("/api/entidad/registraryasignar", {  
           dataType: "json",
@@ -221,7 +244,8 @@
             "txtMobile": mobile,
             "txtMail":mail,
             "cmbTipo": tipo,
-            "cmbPublica": esPublica
+            "cmbPublica": esPublica,
+            "cmbTipoIngreso": tipoIngreso
           }
         }).done(function (data) {
           console.log(data);

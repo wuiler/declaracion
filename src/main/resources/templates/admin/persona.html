@@ -7,15 +7,67 @@
         Persona 
       </h1>
       <p class="subtitle">
-        Gestiona tu  <strong>Información</strong>!
+        Observas las <strong>Personas</strong>!
       </p>
       <div id="pnlFormulario">
+
+        <div class="message-header">
+          <p>Personas Registradas a tus Entidades</p>
+        </div>
+  
+          <table class="table is-fullwidth is-hoverable">
+            <thead>
+              <tr>
+                <th class="is-hidden-touch">Entidad</th>
+                <th>Persona</th>                            
+                <th>Mail</th>                              
+                <th>Teléfono</th>                              
+                <th class="has-text-centered">Estado</th>
+                <th class="has-text-centered is-hidden-touch">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {#for declaPersona in listaDeclaracionPersonas} 
+              <tr>
+                <td class="is-hidden-touch">{declaPersona.entidad.nombre}</td>              
+                <td class="is-size-5">{#if declaPersona.persona.nombre == null }{declaPersona.persona.mail}{#else}{declaPersona.persona.getApellidoyNombre()}{/if}</td>              
+                <td class="is-size-5">{declaPersona.persona.mail}</td>
+                <td class="is-size-5">{declaPersona.persona.telefonoMovil}</td>
+                <td class="">Estado</td>
+                <td class="has-text-centered">
+                  <button class="button" title="Editar">
+                    <span class="icon">
+                      <i class="fas fa-edit"></i>
+                    </span>
+                  </button>
+                  <button class="button" title="Eliminar">
+                    <span class="icon">
+                      <i class="fas fa-trash"></i>
+                    </span>
+                  </button>
+                  <button class="button" title="Cambiar Estado">
+                    <span class="icon">
+                      <i class="fas fa-toggle-on"></i>
+                    </span>
+                  </button>
+                  <button class="button" title="Ver Declaración">
+                    <span class="icon">
+                      <i class="far fa-file-alt"></i>
+                    </span>
+                  </button>
+                  <button class="button" title="Comunicarse">
+                    <span class="icon">
+                      <i class="fas fa-phone"></i>
+                    </span>
+                  </button>
+                </td>  
+              </tr>
+              {/for}
+            </tbody>
+          </table>
+  
       </div>
 
-      <div id="pnlResultado">
-        <p>Vas a recibir y debes confirmar tu cuenta de mail para terminar tu registración.</p>
-        <p>Gracias y estamos en contacto.</p>
-      </div>
       <div id="pnlInfo">
 
       </div>
@@ -27,66 +79,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
     $(document).ready(function () {
-      $('#pnlFormulario').hide();
-      $("#pnlResultado").hide();
-      localData();
-
-      function localData() {
-
-        if (typeof (Storage) !== "undefined") {
-          // Store
-          var data = localStorage.getItem("persona");
-          var persona = JSON.parse(data);
-
-          if (persona==null) {
-            $('#pnlFormulario').show();
-          } else {
-            $('#pnlFormulario').hide();                 
-            $('#pnlInfo').html('Hola <strong>' + persona.apellidoyNombre + '!!</strong>');
-          }
-
-        } else {
-          $('#pnlFormulario').show();
-          $('#pnlInfo').hide();
-        }
-
-      }
-
-      $("#frmRegistrar").on('click', function (e) {
-        e.preventDefault();
-
-        var mail = $("#txtMail").val();
-        var nombre = $("#txtNombre").val();
-        var apellido = $("#txtApellido").val();
-        var mobile = $("#txtMobile").val();
-        var documento = $("#txtDocumento").val();
-        var domicilio = $("#txtDomicilio").val();
-
-        $.ajax("/api/persona/registrar", {
-          dataType: "json",
-          method: "POST",
-          data: {
-            "txtMail": mail,
-            "txtNombre": nombre,
-            "txtApellido": apellido,
-            "txtMobile": mobile,
-            "txtDocumento": documento,
-            "txtDomicilio": domicilio
-          }
-        }).done(function (data) {
-          var persona = JSON.stringify(data);
-          console.log(persona);
-          localStorage.setItem("persona", persona);
-        }).fail(function (data) {
-          console.log("error" + data);
-        });
-      });
 
     });
 
   </script>
-
-
   {/script}
   
 {/include}

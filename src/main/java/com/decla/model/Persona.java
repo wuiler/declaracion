@@ -203,27 +203,14 @@ public class Persona implements Serializable {
 		//new StringBuilder(apellido).append(" ").append(nombre).toString();
 	}
 
-	
-
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("Persona [nombre=");
-		builder.append(nombre);
-		builder.append(", apellido=");
-		builder.append(apellido);
-		builder.append(", cuil=");
-		builder.append(cuil);
-		builder.append(", domicilio=");
-		builder.append(domicilio);
-		builder.append(", numeroDocumento=");
-		builder.append(numeroDocumento);
-		builder.append(", tipoDocumento=");
-		builder.append(tipoDocumento);
-		builder.append(", mail=");
-		builder.append(mail);
-		builder.append("]");
-		return builder.toString();
+		return "Persona [apellido=" + apellido + ", barrio=" + barrio + ", cuil=" + cuil + ", departamento="
+				+ departamento + ", domicilio=" + domicilio + ", estadoCivil=" + estadoCivil + ", fechaNacimiento="
+				+ fechaNacimiento + ", mail=" + mail + ", nacionalidad=" + nacionalidad + ", nombre=" + nombre
+				+ ", numero=" + numero + ", numeroDocumento=" + numeroDocumento + ", pais=" + pais + ", piso=" + piso
+				+ ", sexo=" + sexo + ", telefonoFijo=" + telefonoFijo + ", telefonoMovil=" + telefonoMovil
+				+ ", tipoDocumento=" + tipoDocumento + "]";
 	}
 
 }

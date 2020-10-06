@@ -57,16 +57,35 @@
     </div>
     </div>
   </section>  
-
   {/body}
   {#script}
-
   <script src="https://www.google.com/recaptcha/api.js"></script>  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
     $(document).ready(function () {
       $("#pnlResultado").hide();
+
       localData();
+
+      function myFunction(item, index) {
+                console.log(index + ":" + item);
+
+                var elItem = item.split("=");
+                var id = elItem[0];
+                var valor = elItem[1];
+                var jId = "#"+id;
+
+                if (id.startsWith("pregunta")) {
+                  //es una pregunta
+                  try {
+                    $("input[name=" + id + "][value=" + valor + "]").attr('checked', 'checked');
+                  } catch (e) {
+                    $("input[name=" + id + "]").attr('value', valor);
+                  }
+                } else {  
+                  //$(jId).val(valor);
+                }                
+              }
 
       function localData() {
 
@@ -75,15 +94,30 @@
           var data = localStorage.getItem("persona");
           var persona = JSON.parse(data);
 
-          console.log(persona);
-
           if (persona==null) {
-            location.href = "/registro";
+            location.href = "/registro";  
             return;
           }
 
+          var dataDecla = localStorage.getItem("declaracionPersona");
+
+          if (dataDecla!=null) {
+            var declaracionPersona = dataDecla.split("&");
+
+            if (dataDecla!=null) {
+              //aqui hay info, autocompletamos con 
+              //console.log(declaracionPersona);
+
+              declaracionPersona.forEach(myFunction);
+
+            }
+          }
+
+          console.log(persona);
+
           $('#idUsuario').val(persona.mail);
           $('#txtNombreUsuario').html('de ' + persona.apellidoyNombre);
+
 
         } else {
           console.log("Hay que escribir como persona");
@@ -92,17 +126,25 @@
 
       }
 
+      $("#btnAceptar").on('click', function (e) {
+        
+        var dataDecla = $("#frmRegistrar").serialize();
+        localStorage.setItem("declaracionPersona", dataDecla);          
+
+      });      
+
       $("#btnAceptarX").on('click', function (e) {
         e.preventDefault();
 
-        var data = $("#frmRegistrar").serialize();
+        var dataDecla = $("#frmRegistrar").serialize();
 
         $.ajax("/api/declaracion/registrar", {
           dataType: "text",
           method: "POST",
-          data: data
+          data: dataDecla
         }).done(function (data) {
           console.log(data);
+          localStorage.setItem("declaracionPersona", dataDecla);          
           var idEntidad = data.idEntidad;
           $("#txtIdEntidad").val(idEntidad);
           //$("#frmContinuar").submit();
@@ -113,6 +155,5 @@
     });
 
   </script>
-
   {/script}
 {/include}

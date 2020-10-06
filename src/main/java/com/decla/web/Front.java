@@ -2,6 +2,7 @@ package com.decla.web;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -9,6 +10,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 
 import com.decla.config.AppConfig;
+import com.decla.config.AppMessages;
 import com.decla.model.DeclaracionEntidad;
 import com.decla.model.Entidad;
 import com.decla.model.Pregunta;
@@ -20,6 +22,7 @@ import org.jboss.logging.Logger;
 
 import io.quarkus.qute.Template;
 import io.quarkus.qute.TemplateInstance;
+import io.quarkus.qute.i18n.MessageBundles;
 
 @Path("/")
 public class Front {
@@ -55,6 +58,14 @@ public class Front {
     @GET
     @Path("/")
     public TemplateInstance get() {                
+        //Locale.setDefault(newLocale);
+        LOG.infof("Locale : %s", Locale.getDefault());
+        Locale.setDefault(new Locale("de", "DE"));
+        LOG.infof("Locale : %s", Locale.getDefault());
+
+
+        LOG.infof("MessageBundles.get(AppMessages.class).app_description()) : %s",MessageBundles.get(AppMessages.class).app_description());
+
         return index.instance();
     }    
 
@@ -92,7 +103,6 @@ public class Front {
                 .data("listaDeclaracionEntidad",listaDeclaracionEntidad);
 
         } else {
-
 
             try {
                 entidad = entidadRepository.findByHash(idEntidad);

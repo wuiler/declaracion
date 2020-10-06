@@ -83,7 +83,7 @@
     </div>
     <div id="pnlInfo">
 
-      </div>
+    </div>
     </div>
   </section>  
   {/body}
@@ -103,11 +103,21 @@
           var data = localStorage.getItem("persona");
           var persona = JSON.parse(data);
 
-          if (persona==null) {
-            $('#pnlFormulario').show();
-          } else {
+          if (persona!=null) {
+            var mail = persona.mail;
+            var nombre = persona.nombre;
+            var apellido = persona.apellido;
+            var mobile = persona.telefonoMovil;
+            var documento = persona.numeroDocumento;
+            var domicilio = persona.domicilio;
+
+            register(mail, nombre, apellido, mobile, documento, domicilio)
+
             $('#pnlFormulario').hide();                 
             $('#pnlInfo').html('Hola <strong>' + persona.apellidoyNombre + '!!</strong>');
+
+          } else {
+            $('#pnlFormulario').show();
           }
 
         } else {
@@ -116,8 +126,6 @@
         }
 
       }
-
-
 
       $("#frmRegistrar").on('click', function (e) {
         e.preventDefault();
@@ -128,6 +136,13 @@
         var mobile = $("#txtMobile").val();
         var documento = $("#txtDocumento").val();
         var domicilio = $("#txtDomicilio").val();
+
+        register(mail, nombre, apellido, mobile, documento, domicilio)
+
+      });
+
+
+      function register(mail, nombre, apellido, mobile, documento, domicilio) {
 
         $.ajax("/api/persona/registrar", {
           dataType: "json",
@@ -142,19 +157,19 @@
           }
         }).done(function (data) {
           var persona = JSON.stringify(data);
-          console.log(persona);
           localStorage.setItem("persona", persona);
-          $('#pnlFormulario').hide();   
           var data = localStorage.getItem("persona");
           var persona = JSON.parse(data);
-              
+
+          $('#pnlFormulario').hide();                 
           $('#pnlInfo').html('Gracias por registrarte <strong>' + persona.apellidoyNombre + '!!</strong><p class="title"><a href="/declaracion">Firmar una declaración.</a></p>');
 
         }).fail(function (data) {
           $('#pnlFormulario').hide();                 
           $('#pnlInfo').html('Ha ocurrido un incoveniente. Intente nuevamente más tarde. Gracias!');
         });
-      });
+
+      }
 
     });
 

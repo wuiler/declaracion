@@ -1,5 +1,8 @@
 {#include base} 
   {#title}Admin{/title} 
+  {#stylesheet}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+  {/stylesheet}
   {#body}
   <section class="section">
     <div class="container">
@@ -112,17 +115,18 @@
           </div>
         </div>    
       </main>
-      Tus entidades 
       <p>
+      Tus entidades:       
       {#for entidad in listaEntidad} 
         [ {entidad.nombre} ]
       {/for}            
       </p>
+      <!--
       <div class="message-header">
         <p>Accesos por Entidades</p>
       </div>
-
-        <table class="table is-fullwidth is-hoverable">
+-->
+        <table class="table is-fullwidth is-hoverable" id="tblMain">
           <thead>
             <tr>
               <th class="is-hidden-touch">Declaración</th>
@@ -139,7 +143,7 @@
               <td class="is-hidden-touch">{decla.declaracion.nombre}</td>
               <td class="is-hidden-touch">{decla.entidad.nombre}</td>              
               <td class="is-size-5">{decla.getFechaFormateada()}</td>
-              <td class="is-size-5">{#if decla.persona.nombre == null }{decla.persona.mail}{#else}{decla.persona.getApellidoyNombre()}{/if}</td>              
+              <td class="is-size-5" title="{decla.persona.mail} - {decla.persona.telefonoMovil}">{#if decla.persona.nombre == null }{decla.persona.mail}{#else}{decla.persona.getApellidoyNombre()}{/if}</td>              
               <td class="is-size-5 has-text-centered {#if decla.estado == 0 }is-warning{#else if decla.estado == 2}is-danger{#else}is-success{/if}">
                 {#if decla.estado == 0 }
                 <p class="is-hidden-touch">REVISAR</p><p class="is-hidden-tablet">REV</p>
@@ -176,15 +180,6 @@
                 </button>
               </td>
             </tr>
-            <!--
-            <tr>
-              <td colspan="6">
-                {#for pregunta in decla.declaracion.preguntas} 
-                  {pregunta.nombre} - {pregunta.valor}<br/>
-                {/for}
-              </td>
-            </tr>
-            -->
             {/for}
           </tbody>
         </table>
@@ -198,12 +193,12 @@
   {#script}
   <script src="https://www.google.com/recaptcha/api.js"></script>  
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https:////cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
   <script>
     $(document).ready(function () {
       $("#pnlResultado").hide();
-
+      $('#tblMain').DataTable();
     });
-
   </script>
   {/script}
 {/include}

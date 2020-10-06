@@ -93,9 +93,8 @@ public class DeclaracionPersonaResource {
         Entidad entidad = null;
         Persona persona = null;
         Declaracion declaracion = null;
+        Pregunta pregunta = null;        
         Collection<Respuesta> listaRespuesta = new ArrayList<Respuesta>();
-
-        Pregunta pregunta = null;
         
         for (List<InputPart> list : lists) {
 

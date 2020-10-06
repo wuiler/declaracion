@@ -23,10 +23,12 @@ import com.decla.config.AppConfig;
 import com.decla.model.Declaracion;
 import com.decla.model.DeclaracionEntidad;
 import com.decla.model.Entidad;
+import com.decla.model.Espacio;
 import com.decla.model.Tipo;
 import com.decla.repository.DeclaracionEntidadRepository;
 import com.decla.repository.DeclaracionRepository;
 import com.decla.repository.EntidadRepository;
+import com.decla.repository.EspacioRepository;
 import com.decla.repository.TipoRepository;
 import com.decla.util.Crypto;
 import com.decla.util.Fecha;
@@ -45,8 +47,8 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel;
 
 @ApplicationScoped
-@Path("/api/entidad")
-public class EntidadResource {
+@Path("/api/espacio")
+public class EspacioResource {
 
     private static final Logger LOG = Logger.getLogger(EntidadResource.class);
 
@@ -57,10 +59,7 @@ public class EntidadResource {
     EntidadRepository controladorEntidad;
 
     @Inject
-    DeclaracionRepository controladorDeclaracion;
-
-    @Inject
-    DeclaracionEntidadRepository controladorDeclaracionEntidad;
+    EspacioRepository controladorEspacio;
 
     @Inject
     TipoRepository controladorTipo;
@@ -69,78 +68,37 @@ public class EntidadResource {
     AppConfig config;
 
     @POST
-    @Path("/registrar")
-    @Produces({ MediaType.APPLICATION_JSON })
-    public Entidad create(@FormParam("txtNombre") String nombre, @FormParam("txtMobile") String telefono, @FormParam("txtMail") String mail, @FormParam("cmbTipo") int idTipo) {
-        
-        Tipo tipo = controladorTipo.findById(idTipo);
-
-        Entidad e = new Entidad();
-        e.setNombre(nombre); 
-        e.setTelefono(telefono);
-        e.setTipo(tipo);
-        e.setMail(mail);
-        e.setEsPublica(true);
-
-        controladorEntidad.save(e);
-
-        return e;
-
-    }
-
-    @POST
     @Path("/registraryasignar")
     @Produces({ MediaType.APPLICATION_JSON })
-    public Entidad create(@FormParam("txtCreadoPor") String creadoPor, @FormParam("txtNombre") String nombre, @FormParam("txtMobile") String telefono, @FormParam("txtMail") String mail, @FormParam("cmbTipo") int idTipo, @FormParam("cmbPublica") String esPublica, @FormParam("cmbTipoIngreso") int tipoIngreso) {
+    public Espacio create(@FormParam("txtCreadoPor") String creadoPor, @FormParam("txtNombre") String nombre, @FormParam("txtMobile") String telefono, @FormParam("txtMail") String mail, @FormParam("cmbTipo") int idTipo, @FormParam("cmbPublica") String esPublica, @FormParam("cmbTipoIngreso") int tipoIngreso) {
         
         Tipo tipo = controladorTipo.findById(idTipo);
 
-        Boolean publica = false;
+        long idEntidad=1;
+        Entidad entidad = controladorEntidad.findById(idEntidad);
 
-        if ("1".equals(esPublica)) {
-            publica = true;
-        } else {
-            publica = false;
-        }
-
-        Entidad entidad = new Entidad();
-        entidad.setNombre(nombre); 
-        entidad.setTelefono(telefono);
-        entidad.setTipo(tipo);
-        entidad.setMail(mail);        
-        entidad.setEsPublica(publica);
-        entidad.setCreatedAt(Fecha.hoy());
-        entidad.setCreadoPor(creadoPor);        
-
-        Declaracion declaracion = controladorDeclaracion.findDeclaracionBase();
-
-        if (declaracion==null) {
+        if (entidad==null) {
             LOG.error("No hay declaraciones bases definidas");
         }
 
-        LOG.infof("Declaracion : %s", declaracion.toString());
-        controladorEntidad.save(entidad);
+        Espacio espacio = new Espacio();
+        espacio.setNombre(nombre);
+        espacio.setDescripcion("descripcion");
+        espacio.setEntidad(entidad);
+        espacio.setTipo(tipo);
 
-        DeclaracionEntidad declaracionEntidad = new DeclaracionEntidad();
-        declaracionEntidad.setEntidad(entidad);
-        declaracionEntidad.setDeclaracion(declaracion);
-        declaracionEntidad.setEstado(1);
-        declaracionEntidad.setFecha(Fecha.hoy());
-        //tipoIngreso = 1 (one time) / tipoIngreso = 2 (always)
-        declaracionEntidad.setTipoIngreso(tipoIngreso);
+        controladorEspacio.save(espacio);
         
-        controladorDeclaracionEntidad.save(declaracionEntidad);
-        
-        return entidad;
+        return espacio;
 
     }
 
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON })
-    public Collection<Entidad> list() {
+    public Collection<Espacio> list() {
         
-        return controladorEntidad.list();
+        return  controladorEspacio.list();
 
     }
 
@@ -165,7 +123,7 @@ public class EntidadResource {
             String url = config.url();
             String hash = Crypto.b64Encode(id);
             
-            sbQR = url + "declaracion?entidad="+hash;
+            sbQR = url + "espacio?entidad="+hash;
 
             BitMatrix matrix = writer.encode(sbQR, BarcodeFormat.QR_CODE, 400, 400, hintMap);
             
@@ -179,7 +137,6 @@ public class EntidadResource {
 
             ResponseBuilder responseImage = Response.ok(imageInByte);
             responseImage.header("Content-Disposition", "inline");
-
 
             response = responseImage;
 

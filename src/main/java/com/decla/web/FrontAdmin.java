@@ -47,6 +47,9 @@ public class FrontAdmin {
     @ResourcePath("admin/organizacion.html") 
     Template organizacion;
 
+    @ResourcePath("admin/persona.html") 
+    Template personaTemplate;
+
     @ResourcePath("admin/dashboard.html") 
     Template dashboard;
 
@@ -92,6 +95,35 @@ public class FrontAdmin {
                 .data("listaDeclaracionEntidad", listaDeclaracionEntidad);
             
     }    
+
+    @GET
+    @Path("/personas")
+    public TemplateInstance getPersonas() {
+
+        String userId = jwt.getName();
+
+        LOG.infof("userid : %s", userId);
+
+        Persona persona = personaRepository.findById(userId);
+
+        if (persona==null) {
+            persona = registroInicialPersona(userId);
+        }
+
+        Collection<Entidad> listaEntidad = new ArrayList<Entidad>();
+        listaEntidad = entidadRepository.findAllByOwner(userId);
+        LOG.infof("listaEntidad.size() : %s",listaEntidad.size());
+
+        Collection<DeclaracionPersona> listaDeclaracionPersonas = new ArrayList<DeclaracionPersona>();
+        listaDeclaracionPersonas = declaracionPersonaRepository.listByAllEntidad(listaEntidad);
+        LOG.infof("listaDeclaracionPersonas : %s",listaDeclaracionPersonas.size());
+
+        return personaTemplate
+                .data("listaEntidad", listaEntidad)
+                .data("persona", persona)
+                .data("listaDeclaracionPersonas", listaDeclaracionPersonas);
+            
+    }
 
     @GET
     public TemplateInstance getDashboard() {
