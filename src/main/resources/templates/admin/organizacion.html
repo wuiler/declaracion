@@ -46,8 +46,8 @@
                     </p>
                     <p>
                       {entidad.entidad.toString()}
-                      <a href="#" class="card-footer-item button is-primary is-large" id="btnEditar">Editar</a>
-                      <a href="#" class="card-footer-item button is-primary is-large">QR</a>
+                      <a href="/admin/organizacion/edit/{entidad.idEntidad}" class="card-footer-item button is-primary is-large" id="btnEditar">Editar</a>
+                      <a href="#" class="card-footer-item button is-primary is-large" data-id="{entidad.entidad.idEntidad}" id="btnQrEntidad">QR</a>
                       <a href="#" class="card-footer-item button is-primary is-large" id="btnEspacio">Espacios</a>
                     </p>
                     <!--
@@ -173,15 +173,14 @@
         </div>
       </div>
     </div>
-    <div class="modal">
-      <div class="modal-background"></div>
-      <div class="modal-content">
-        <!-- Any other Bulma elements you want -->
-      </div>
-      <button class="modal-close is-large" aria-label="close"></button>
-    </div>
   </section>  
-
+  <div class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
   {/body}
   {#script}
 
@@ -192,8 +191,12 @@
       $("#pnlResultado").hide();
       $("#pnlFormulario").hide();
       
-      function qr() {
-        
+      function qr(idEntidad) {      
+        var id = idEntidad;
+        if (id==null) {
+          id = $("#txtIdEntidad").val();
+        }
+
         var xhrQr = new XMLHttpRequest();
         xhrQr.onreadystatechange = function(){
             if (this.readyState == 4 && this.status == 200){
@@ -202,11 +205,24 @@
                 img.src = url.createObjectURL(this.response);
             }
         }
-        var laUrl = "/api/entidad/qr/"+$("#txtIdEntidad").val();
+        var laUrl = "/api/entidad/qr/"+id
         xhrQr.open('GET', laUrl);
         xhrQr.responseType = 'blob';
         xhrQr.send();            
       }
+
+      $("#btnQrEntidad").on('click', function (e) {
+        e.preventDefault();
+        var id = $(this).attr("data-id");        
+        qr(id);
+        $(".modal .modal-content").html($("#qr").clone());
+        $(".modal").removeClass("is-active is-clipped")
+		    $(".modal").addClass("is-active is-clipped")	        
+      });
+      
+      $(".modal-close" ).on( "click", function(e) {
+		    $(".modal").removeClass("is-active is-clipped")
+	    }); 	      
 
       $("#btnEditar").on('click', function (e) {
         e.preventDefault();

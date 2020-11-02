@@ -64,7 +64,7 @@ public class Front {
         LOG.infof("Locale : %s", Locale.getDefault());
 
 
-        LOG.infof("MessageBundles.get(AppMessages.class).app_description()) : %s",MessageBundles.get(AppMessages.class).app_description());
+        LOG.infof("MessageBundles.get(AppMessages.class).app_description()) : %s", MessageBundles.get(AppMessages.class).app_description());
 
         return index.instance();
     }    

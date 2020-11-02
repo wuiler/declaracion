@@ -1,7 +1,31 @@
 {#include base} 
   {#title}Admin{/title} 
   {#stylesheet}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
+<!--    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />-->
+    <style type="text/css">
+    .dataTables_wrapper {
+    position: relative;
+    clear: both;
+    *zoom: 1;
+    }
+    .dataTables_wrapper .dataTables_length {
+    float: left;
+}
+.dataTables_wrapper .dataTables_length select {
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    padding: 5px;
+    background-color: transparent;
+    padding: 4px;
+}
+.dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter, .dataTables_wrapper .dataTables_info, .dataTables_wrapper .dataTables_processing, .dataTables_wrapper .dataTables_paginate {
+    color: #333;
+}
+.dataTables_wrapper .dataTables_filter {
+    float: right;
+    text-align: right;
+}
+    </style>
   {/stylesheet}
   {#body}
   <section class="section">
@@ -158,22 +182,22 @@
                 {/if}
               </td>
               <td class="has-text-centered">
-                <button class="button" title="Cambiar Estado">
+                <button class="button modalWindow" title="Cambiar Estado">
                   <span class="icon">
                     <i class="fas fa-toggle-on"></i>
                   </span>
                 </button>
-                <button class="button" title="Ver Declaración">
+                <button class="button modalWindow" title="Ver Declaración">
                   <span class="icon">
                     <i class="far fa-file-alt"></i>
                   </span>
                 </button>
-                <button class="button" title="Ver Relaciones">
+                <button class="button modalWindow" title="Ver Relaciones">
                   <span class="icon">
                     <i class="fas fa-people-arrows"></i>
                   </span>
                 </button>
-                <button class="button" title="Comunicarse">
+                <button class="button modalWindow" title="Comunicarse">
                   <span class="icon">
                     <i class="fas fa-phone"></i>
                   </span>
@@ -188,7 +212,14 @@
   {/if}    
     </div>
   </section>  
-
+  <div class="modal" id="modalSoporte">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <p class="title has-text-white">Proximamente. <br/> Recuerde haber leído todo este sitio. Gracias!</p>
+		<p class="subtitle has-text-white">Nuestro mail de soporte es <a href="mailto:jose@infiter.com">jose@infiter.com</a></p>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
   {/body}
   {#script}
   <script src="https://www.google.com/recaptcha/api.js"></script>  
@@ -198,7 +229,24 @@
     $(document).ready(function () {
       $("#pnlResultado").hide();
       $('#tblMain').DataTable();
+      $( ".modalWindow" ).on( "click", function(e) {
+        $(".modal").removeClass("is-active is-clipped")
+        $(".modal").addClass("is-active is-clipped")		
+      }); 
+    
+      $( ".modal-close" ).on( "click", function(e) {
+        $( ".modal").removeClass("is-active is-clipped")
+      }); 	
+          
     });
+    document.addEventListener('DOMContentLoaded', () => {
+      (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+        $notification = $delete.parentNode;
+        $delete.addEventListener('click', () => {
+          $notification.parentNode.removeChild($notification);
+        });
+      });
+    });	
   </script>
   {/script}
 {/include}

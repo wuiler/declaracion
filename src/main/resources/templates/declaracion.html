@@ -67,7 +67,7 @@
 
       localData();
 
-      function myFunction(item, index) {
+      function declaLupe(item, index) {
                 console.log(index + ":" + item);
 
                 var elItem = item.split("=");
@@ -94,7 +94,17 @@
           var data = localStorage.getItem("persona");
           var persona = JSON.parse(data);
 
-          if (persona==null) {
+          if (persona!=null) {
+            var mail = persona.mail;
+            var nombre = persona.nombre;
+            var apellido = persona.apellido;
+            var mobile = persona.telefonoMovil;
+            var documento = persona.numeroDocumento;
+            var domicilio = persona.domicilio;
+
+            register(mail, nombre, apellido, mobile, documento, domicilio);
+
+          } else {
             location.href = "/registro";  
             return;
           }
@@ -106,10 +116,7 @@
 
             if (dataDecla!=null) {
               //aqui hay info, autocompletamos con 
-              //console.log(declaracionPersona);
-
-              declaracionPersona.forEach(myFunction);
-
+              declaracionPersona.forEach(declaLupe);
             }
           }
 
