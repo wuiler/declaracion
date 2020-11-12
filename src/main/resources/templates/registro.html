@@ -100,21 +100,62 @@
 
         if (typeof (Storage) !== "undefined") {
           // Store
-          var data = localStorage.getItem("persona");
+
+          var data = getStorage("persona");//localStorage.getItem("persona");
+          console.log(data);
           var persona = JSON.parse(data);
+          console.log(persona);
 
           if (persona!=null) {
-            var mail = persona.mail;
-            var nombre = persona.nombre;
-            var apellido = persona.apellido;
-            var mobile = persona.telefonoMovil;
-            var documento = persona.numeroDocumento;
-            var domicilio = persona.domicilio;
 
-            register(mail, nombre, apellido, mobile, documento, domicilio)
+            $('#pnlInfo').show();
+            $('#pnlInfo').append("Hola " + persona  .nombre + "!");
 
-            $('#pnlFormulario').hide();                 
-            $('#pnlInfo').html('Hola <strong>' + persona.apellidoyNombre + '!!</strong>');
+            let promiseFind = find(persona.mail);
+
+            promiseFind.then(
+              function(value) {
+                //$('#pnlFormulario').hide();                 
+                //$('#pnlInfo').html('Hola <strong>' + persona.apellidoyNombre + '!!</strong>');
+                if (value==0) {
+                  let promiseRegister = registerPerson(persona.mail, persona.nombre, persona.apellido, persona.telefonoMovil, persona.numeroDocumento, persona.domicilio);
+            
+                  promiseRegister.then(
+                    function(value) {
+                      $('#pnlFormulario').hide();                 
+                      $('#pnlInfo').html('Gracias por registrarte <strong>' + persona.nombre + '!!</strong><p class="title"><a href="/declaracion">Firmar una declaración.</a></p>'); 
+                    },
+                    function(error) {
+                      console.log("Error" + error);
+                      $('#pnlFormulario').hide();                 
+                      $('#pnlInfo').html('Ha ocurrido un incoveniente. Intente nuevamente más tarde. Gracias!');
+                    }
+                  );
+                      
+                } else {
+                  console.log("esta no hace falta registrarlo");
+                }
+
+                
+              },
+              function(error) {
+                console.log("no esta en DB solo local, registrarlo");
+                let promiseRegister = registerPerson(persona.mail, persona.nombre, persona.apellido, persona.telefonoMovil, persona.numeroDocumento, persona.domicilio);
+            
+                promiseRegister.then(
+                  function(value) {
+                    $('#pnlFormulario').hide();                 
+                    $('#pnlInfo').html('Gracias por registrarte <strong>!!</strong><p class="title"><a href="/declaracion">Firmar una declaración.</a></p>'); 
+                  },
+                  function(error) {
+                    console.log("Error" + error);
+                    $('#pnlFormulario').hide();                 
+                    $('#pnlInfo').html('Ha ocurrido un incoveniente. Intente nuevamente más tarde. Gracias!');
+                  }
+                );
+
+              }
+            );            
 
           } else {
             $('#pnlFormulario').show();
@@ -136,46 +177,29 @@
         var mobile = $("#txtMobile").val();
         var documento = $("#txtDocumento").val();
         var domicilio = $("#txtDomicilio").val();
+        var r = 0 ;
+        
+        let promiseRegister = registerPerson(mail, nombre, apellido, mobile, documento, domicilio);
+            
+        promiseRegister.then(
+          function(value) {
+            $('#pnlFormulario').hide();                 
+            $('#pnlInfo').html('Gracias por registrarte <strong>' + nombre + '!!</strong><p class="title"><a href="/declaracion">Firmar una declaración.</a></p>'); 
+          },
+          function(error) {
+            console.log("Error" + error);
+            $('#pnlFormulario').hide();                 
+            $('#pnlInfo').html('Ha ocurrido un incoveniente. Intente nuevamente más tarde. Gracias!');
+          }
+        );
 
-        register(mail, nombre, apellido, mobile, documento, domicilio)
 
       });
 
-/*
-      function register(mail, nombre, apellido, mobile, documento, domicilio) {
 
-        $.ajax("/api/persona/registrar", {
-          dataType: "json",
-          method: "POST",
-          data: {
-            "txtMail": mail,
-            "txtNombre": nombre,
-            "txtApellido": apellido,
-            "txtMobile": mobile,
-            "txtDocumento": documento,
-            "txtDomicilio": domicilio
-          }
-        }).done(function (data) {
-          var persona = JSON.stringify(data);
-          localStorage.setItem("persona", persona);
-          var data = localStorage.getItem("persona");
-          var persona = JSON.parse(data);
-
-          $('#pnlFormulario').hide();                 
-          $('#pnlInfo').html('Gracias por registrarte <strong>' + persona.apellidoyNombre + '!!</strong><p class="title"><a href="/declaracion">Firmar una declaración.</a></p>');
-
-        }).fail(function (data) {
-          $('#pnlFormulario').hide();                 
-          $('#pnlInfo').html('Ha ocurrido un incoveniente. Intente nuevamente más tarde. Gracias!');
-        });
-
-      }
-*/
     });
 
   </script>
-
-
   {/script}
   
 {/include}

@@ -109,8 +109,9 @@ public class DeclaracionPersonaResource {
                     entidad = controladorEntidad.findById(Long.valueOf(campo));
                 }
 
-                if (valor.contains("idUsuario")) {
-                    persona = controladorPersona.findById(campo);
+                if (valor.contains("idUsuario")) {                    
+                    persona = controladorPersona.findById(campo);                    
+                    //LOG.infof("La persona es : %s ", persona.toString());
                 }
 
                 if (valor.contains("idDeclaracion")) {
@@ -152,6 +153,8 @@ public class DeclaracionPersonaResource {
             
         }
 
+        LOG.infof("La persona es : %s ", persona.toString());
+
         DeclaracionPersona declaracionPersona = new DeclaracionPersona();
         declaracionPersona.setDeclaracion(declaracion);
         declaracionPersona.setEntidad(entidad);
@@ -162,7 +165,7 @@ public class DeclaracionPersonaResource {
         int alertaEstadoDeclaracion = 0;
 
         for (Respuesta respuestaRealizadas : listaRespuesta) {
-            System.out.println("value= " + respuestaRealizadas);
+            //System.out.println("value= " + respuestaRealizadas);
 
             String tipoPregunta = respuestaRealizadas.getPregunta().getTipo();
             String valor = respuestaRealizadas.getValor();
@@ -190,6 +193,9 @@ public class DeclaracionPersonaResource {
         }
         
         declaracionPersona.setEstado(estadoDeclaracion);
+
+        LOG.infof("La Declaracion persona es : %s ", declaracionPersona.toString());
+
         controladorDeclaracionPersona.save(declaracionPersona);        
     
         return "Gracias completar tu declaración! Que tengas muy buen juego.";

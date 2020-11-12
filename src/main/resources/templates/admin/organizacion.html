@@ -45,10 +45,9 @@
                       {entidad.entidad.mail} 
                     </p>
                     <p>
-                      {entidad.entidad.toString()}
-                      <a href="/admin/organizacion/edit/{entidad.idEntidad}" class="card-footer-item button is-primary is-large" id="btnEditar">Editar</a>
+                      <a href="/admin/organizacion/edit/{entidad.entidad.idEntidad}" class="card-footer-item button is-primary is-large" id="btnEditar">Editar</a>
                       <a href="#" class="card-footer-item button is-primary is-large" data-id="{entidad.entidad.idEntidad}" id="btnQrEntidad">QR</a>
-                      <a href="#" class="card-footer-item button is-primary is-large" id="btnEspacio">Espacios</a>
+                      <!--<a href="#" class="card-footer-item button is-primary is-large" id="btnEspacio">Espacios</a>-->
                     </p>
                     <!--
                     <p>
@@ -154,7 +153,8 @@
           </div>
           <div class="column has-text-centered">
             <img class="qr" id="qr" width="350" />  
-            <p class="title">Imprima esta imagen para su Cancha</p>
+            <p class="title" >Bienvenidos a <span id="nombreOrganizacion"></span></p>
+            <p class="subtitle" >Escanea el código QR con tu celu para ingresar.</p>
           </div>
           <div class="column">
             &nbsp;
@@ -268,6 +268,7 @@
           var idEntidad = data.idEntidad;
           $("#txtIdEntidad").val(idEntidad);        
           $("#pnlFormulario").hide();
+          $("#nombreOrganizacion").html(nombre);
           qr();
           $("#pnlResultado").show();
           

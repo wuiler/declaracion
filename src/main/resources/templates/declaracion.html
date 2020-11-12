@@ -91,25 +91,9 @@
 
         if (typeof (Storage) !== "undefined") {
           // Store
-          var data = localStorage.getItem("persona");
+          var data = getStorage("persona");
           var persona = JSON.parse(data);
-
-          if (persona!=null) {
-            var mail = persona.mail;
-            var nombre = persona.nombre;
-            var apellido = persona.apellido;
-            var mobile = persona.telefonoMovil;
-            var documento = persona.numeroDocumento;
-            var domicilio = persona.domicilio;
-
-            register(mail, nombre, apellido, mobile, documento, domicilio);
-
-          } else {
-            location.href = "/registro";  
-            return;
-          }
-
-          var dataDecla = localStorage.getItem("declaracionPersona");
+          var dataDecla = getStorage("declaracionPersona");
 
           if (dataDecla!=null) {
             var declaracionPersona = dataDecla.split("&");

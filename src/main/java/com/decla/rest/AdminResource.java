@@ -35,6 +35,11 @@ public class AdminResource {
         return "chau";
     }
 
+    @Path("/callback")
+    public void callBackCheck() {
+        
+    }
+
     @GET
 //    @RolesAllowed("admin")
     @Produces(MediaType.TEXT_PLAIN)

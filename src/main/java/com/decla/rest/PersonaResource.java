@@ -80,19 +80,22 @@ public class PersonaResource {
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON })
-    public Persona find(@PathParam("txtMail") String mail) {
+    @Path("/{mail}")       
+    public Persona find(@PathParam("mail") String mail) {
+
+        LOG.infof("El mail es : %s" , mail);
 
         Persona persona = null;
         persona = controlador.findById(mail);
         
         if (persona==null) {
-    //ver la exception        
+    //ver la exception
+            LOG.infof("No existe la persona con id: %s ", mail);        
         }
 
         return persona;
 
     }
-
 
     @GET
     @Produces({ MediaType.APPLICATION_JSON })

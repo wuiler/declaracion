@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
@@ -73,13 +74,27 @@ public class FrontAdmin {
     public TemplateInstance getEntidad() {
 
         String userId = jwt.getName();
+        
+        for (String claim : jwt.getClaimNames()) {
+            //LOG.infof("Claim name : %s", claim);
+            //LOG.infof("Claim value : %s", jwt.claim(claim));
+        }
 
-        LOG.infof("userid : %s", userId);
+        LOG.infof("userid : %s", userId);        
 
         Persona persona = personaRepository.findById(userId);
 
         if (persona==null) {
-            persona = registroInicialPersona(userId);
+            persona = registrar(userId);
+            /*
+            String apellido = jwt.getClaim("family_name");
+            String nombre = jwt.getClaim("given_name");
+            persona = new Persona();
+            persona.setApellido(apellido);
+            persona.setNombre(nombre);
+            persona.setMail(userId);
+            persona = registroInicialPersona(persona);
+            */
         }
 
         Collection<Entidad> listaEntidad = new ArrayList<Entidad>();
@@ -107,7 +122,7 @@ public class FrontAdmin {
         Persona persona = personaRepository.findById(userId);
 
         if (persona==null) {
-            persona = registroInicialPersona(userId);
+            persona = registrar(userId);
         }
 
         Collection<Entidad> listaEntidad = new ArrayList<Entidad>();
@@ -196,6 +211,21 @@ public class FrontAdmin {
             
     }    
 
+    private Persona registrar(String userId) {
+        
+        String apellido = jwt.getClaim("family_name");
+        String nombre = jwt.getClaim("given_name");
+        
+        Persona persona = new Persona();
+        persona.setApellido(apellido);
+        persona.setNombre(nombre);
+        persona.setMail(userId);
+        persona = registroInicialPersona(persona);
+
+        return persona;
+
+    }
+
     private Persona registroInicialPersona(String userId) {
 
         Persona persona = new Persona();
@@ -205,5 +235,14 @@ public class FrontAdmin {
         return persona;
         
     }
+
+    private Persona registroInicialPersona(Persona persona) {
+        
+        personaRepository.save(persona);
+
+        return persona;
+        
+    }
+
 
 }
